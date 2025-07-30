@@ -14,11 +14,10 @@ enum UserRole {
 }
 
 model User {
-  id    String  @id @default(cuid()) @map("_id")
-  name  String
-  email String  @unique
-  image String?
-
+  id       String    @id @default(cuid()) @map("_id")
+  name     String?
+  email    String    @unique
+  image    String?
   accounts Account[]
   role     UserRole  @default(USER)
 
@@ -27,23 +26,21 @@ model User {
 }
 
 model Account {
-  id                String   @id @default(cuid()) @map("_id") @db.ObjectId
-  userId            String   @map("user_id")
+  id                String  @id @default(cuid()) @map("_id")
+  userId            String  @map("user_id")
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?  @map("refresh_token")
-  access_token      String?  @map("access_token")
-  token_secret      String?  @map("token_secret")
-  expires_at        Int?
-  token_type        String?  @map("token_type")
+  refreshToken      String? @map("refresh_token")
+  accessToken       String? @map("access_token")
+  expiresAt         Int?    @map("expires_at")
+  tokenType         String? @map("token_type")
   scope             String?
-  id_token          String?  @map("id_token")
-  session_state     String?  @map("session_state")
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  idToken           String? @map("id_token")
+  sessionState      String? @map("session_state")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
