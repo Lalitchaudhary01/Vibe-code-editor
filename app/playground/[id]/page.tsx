@@ -2,6 +2,8 @@
 
 import { Separator } from "@/components/ui/separator";
 import { Sidebar, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { TemplateFileTree } from "@/features/playground/components/template-file-tree";
+import { useFileExplorer } from "@/features/playground/hooks/useFileExplorer";
 import { usePlayground } from "@/features/playground/hooks/usePlayground";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { useParams } from "next/navigation";
@@ -11,9 +13,31 @@ const Page = () => {
   const { id } = useParams<{ id: string }>();
   const { playgroundData, templateData, isLoading, error, saveTemplateData } =
     usePlayground(id);
+    const {
+    activeFileId,
+    closeAllFiles,
+    openFile,
+    closeFile,
+    editorContent,
+    updateFileContent,
+    handleAddFile,
+    handleAddFolder,
+    handleDeleteFile,
+    handleDeleteFolder,
+    handleRenameFile,
+    handleRenameFolder,
+    openFiles,
+    setTemplateData,
+    setActiveFileId,
+    setPlaygroundId,
+    setOpenFiles,
+  } = useFileExplorer();
+
+  
 
   return (
     <div>
+      <TemplateFileTree data={templateData!} />
       <>
         {/* todoL temolate tree */}
         <SidebarInset>
