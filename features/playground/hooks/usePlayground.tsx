@@ -20,23 +20,31 @@ interface UsePlaygroundReturn {
 }
 
 export const usePlayground = (id: string): UsePlaygroundReturn => {
-    const [playgroundData, setPlaygroundData] = useState<PlaygroundData | null>();
-    const [templateData, setTemplateData] = useState<TemplateFolder | null>();
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<String | null>();
+  const [playgroundData, setPlaygroundData] = useState<PlaygroundData | null>();
+  const [templateData, setTemplateData] = useState<TemplateFolder | null>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<String | null>();
 
-    const loadPlayground = useCallback(async () => {
-        if (!id) return;
-        try{
-            setIsLoading(true);
-            setError(null);
-            const data = await getPlaygroundById(id);
+  const loadPlayground = useCallback(async () => {
+    if (!id) return;
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await getPlaygroundById(id);
+      // @ts-ignore
+      setPlaygroundData(data);
 
-        }catch(error){
-
-        }finally{
-
-        }
-
-    }, [id]);
-}
+      const rawContent = data?.templateFiles?.[0]?.content;
+      if (typeof rawContent === "string") {
+        const parsedContent = JSON.parse(rawContent);
+        setTemplateData(parsedContent);
+        toast.success("Playground loaded successfully");
+        return;
+      }
+      const res = await fetch(`/api/template/${id}`);
+      
+    } catch (error) {
+    } finally {
+    }
+  }, [id]);
+};
