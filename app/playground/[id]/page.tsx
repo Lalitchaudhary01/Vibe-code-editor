@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/resizable";
 import { TemplateFile } from "@/features/playground/types";
 import { PlaygroundEditor } from "@/features/playground/components/playground-editor";
+import { useWebContainer } from "@/features/webcontainers/hooks/useWebContainer";
+import WebContainerPreview from "@/features/webcontainers/components/webcontainer-preveiw";
 
 const Page = () => {
   const { id } = useParams<{ id: string }>();
@@ -56,18 +58,24 @@ const Page = () => {
     setOpenFiles,
   } = useFileExplorer();
 
+  const {
+    serverUrl,
+    isLoading: containerLoading,
+    error: containerError,
+    instance,
+    writeFileSync,
+    // @ts-ignore
+  } = useWebContainer({ templateData });
+
   React.useEffect(() => {
     setPlaygroundId(id);
   }, [id, setPlaygroundId]);
 
   React.useEffect(() => {
     if (templateData && !openFiles.length) {
-
-      
       setTemplateData(templateData);
     }
   }, [templateData, setTemplateData, openFiles.length]);
-
 
   const activeFile = openFiles.find((file) => file.id === activeFileId);
   const hasUnsavedChanges = openFiles.some((file) => file.hasUnsavedChanges);
@@ -166,10 +174,11 @@ const Page = () => {
 
   return (
     <TooltipProvider>
-      <TemplateFileTree data={templateData!}
-      onFileSelect={handleFileSelect}
-       selectedFile={activeFile}
-       />
+      <TemplateFileTree
+        data={templateData!}
+        onFileSelect={handleFileSelect}
+        selectedFile={activeFile}
+      />
       <>
         {/* todoL temolate tree */}
         <SidebarInset>
@@ -315,12 +324,6 @@ const Page = () => {
                         onContentChange={(value) =>
                           activeFileId && updateFileContent(activeFileId, value)
                         }
-                        suggestion={null}
-                        suggestionLoading={false}
-                        suggestionPosition={null}
-                        onAcceptSuggestion={() => {}}
-                        onRejectSuggestion={() => {}}
-                        onRequestSuggestion={() => {}}
                       />
                     </ResizablePanel>
 
@@ -328,15 +331,15 @@ const Page = () => {
                       <>
                         <ResizableHandle />
                         <ResizablePanel defaultSize={50}>
-                          {/* <WebContainerPreview
-                            templateData={templateData}
+                          <WebContainerPreview
+                            templateData={templateData!}
                             instance={instance}
                             writeFileSync={writeFileSync}
                             isLoading={containerLoading}
                             error={containerError}
                             serverUrl={serverUrl!}
                             forceResetup={false}
-                          /> */}
+                          />
                         </ResizablePanel>
                       </>
                     )}
