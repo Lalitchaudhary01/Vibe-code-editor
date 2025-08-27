@@ -35,12 +35,15 @@ import WebContainerPreview from "@/features/webcontainers/components/webcontaine
 import { findFilePath } from "@/features/playground/lib";
 import { toast } from "sonner";
 import ToggleAI from "@/features/playground/components/toggle-ai";
+import { useAISuggestions } from "@/features/playground/hooks/useAISuggestion";
 
 const Page = () => {
   const { id } = useParams<{ id: string }>();
   const [isPreviewVisible, setIsPreviewVisible] = useState(true);
   const { playgroundData, templateData, isLoading, error, saveTemplateData } =
     usePlayground(id);
+
+  const aiSuggestions = useAISuggestions();
   const {
     activeFileId,
     closeAllFiles,
@@ -325,9 +328,9 @@ const Page = () => {
                 </Tooltip>
                 {/* todo toogle  AI*/}
                 <ToggleAI
-                  isEnabled={true}
-                  onToggle={() => {}}
-                  suggestionLoading={false}
+                  isEnabled={aiSuggestions.isEnabled}
+                  onToggle={aiSuggestions.toggleEnabled}
+                  suggestionLoading={aiSuggestions.isLoading}
                   activeFeature={"Code Suggestions"}
                   loadingProgress={50}
                 />
@@ -418,6 +421,18 @@ const Page = () => {
                         content={activeFile?.content || ""}
                         onContentChange={(value) =>
                           activeFileId && updateFileContent(activeFileId, value)
+                        }
+                         suggestion={aiSuggestions.suggestion}
+                        suggestionLoading={aiSuggestions.isLoading}
+                        suggestionPosition={aiSuggestions.position}
+                        onAcceptSuggestion={(editor, monaco) =>
+                          aiSuggestions.acceptSuggestion(editor, monaco)
+                        }
+                        onRejectSuggestion={(editor) =>
+                          aiSuggestions.rejectSuggestion(editor)
+                        }
+                        onTriggerSuggestion={(type, editor) =>
+                          aiSuggestions.fetchSuggestion(type, editor)
                         }
                       />
                     </ResizablePanel>
