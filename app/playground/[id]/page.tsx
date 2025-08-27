@@ -34,6 +34,7 @@ import { useWebContainer } from "@/features/webcontainers/hooks/useWebContainer"
 import WebContainerPreview from "@/features/webcontainers/components/webcontainer-preveiw";
 import { findFilePath } from "@/features/playground/lib";
 import { toast } from "sonner";
+import ToggleAI from "@/features/playground/components/toggle-ai";
 
 const Page = () => {
   const { id } = useParams<{ id: string }>();
@@ -322,20 +323,14 @@ const Page = () => {
                   </TooltipTrigger>
                   <TooltipContent>Save All (Ctrl+Shift+S)</TooltipContent>
                 </Tooltip>
-                {/* todo toogle */}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {}}
-                      disabled={!hasUnsavedChanges}
-                    >
-                      <Bot className="h-4 w-4" /> TOOGLEAI
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Toggle AI</TooltipContent>
-                </Tooltip>
+                {/* todo toogle  AI*/}
+                <ToggleAI
+                  isEnabled={true}
+                  onToggle={() => {}}
+                  suggestionLoading={false}
+                  activeFeature={"Code Suggestions"}
+                  loadingProgress={50}
+                />
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
