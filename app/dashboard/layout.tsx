@@ -20,9 +20,9 @@ export default async function DashboardLayout({
     HONO: "FlameIcon",
     ANGULAR: "Terminal",
   };
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formattedPlaygroundData =
-    playgroundData?.map((item) => ({
+    playgroundData?.map((item: any) => ({
       id: item.id,
       name: item.title,
       starred: item.Starmark?.[0]?.isMarked || false,
